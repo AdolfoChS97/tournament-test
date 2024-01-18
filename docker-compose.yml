@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  backend: 
+    image: boilerplate
+    container_name: boilerplate
+    build: 
+      context: .
+      dockerfile: '.docker/Dockerfile'
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    networks:
+      - boilerplate-ingress 
+networks:
+  boilerplate-ingress:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 19.5.0.0/16
