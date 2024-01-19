@@ -11,8 +11,8 @@ async function bootstrap() {
   app.use(helmet());
 
   const config = new DocumentBuilder()
-    .setTitle('NestJS API boilerplate')
-    .setDescription('A NestJS API boilerplate')
+    .setTitle('Tournament Test')
+    .setDescription('A NestJS project to manage tournaments')
     .setVersion('1.0')
     .build();
 

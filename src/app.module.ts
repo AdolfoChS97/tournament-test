@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { setupSchema } from './schema/setup.schema';
 import { HealthModule } from './modules/health/health.module';
+import { TournamentModule } from './modules/tournament/tournament.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { HealthModule } from './modules/health/health.module';
       },
     }),
     HealthModule,
+    TournamentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
