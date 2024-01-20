@@ -1,12 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Controller, Get } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import {
   HealthCheckService,
   HttpHealthIndicator,
   HealthCheck,
-} from '@nestjs/terminus';
+} from "@nestjs/terminus";
 
-@Controller('health')
+@Controller("health")
 export class HealthController {
   constructor(
     private health: HealthCheckService,
@@ -20,9 +20,9 @@ export class HealthController {
     return this.health.check([
       () =>
         this.http.pingCheck(
-          'health',
-          `${this.configService.get('APP_URL')}:${this.configService.get(
-            'APP_PORT',
+          "health",
+          `${this.configService.get("APP_URL")}:${this.configService.get(
+            "APP_PORT",
           )}`,
         ),
     ]);
