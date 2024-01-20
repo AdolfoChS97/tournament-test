@@ -14,8 +14,34 @@ export class TournamentService {
             
             if(accessPrice === undefined)
                 throw new BadRequestException('Access price is required');
-        
-            this.dynamoService.listTables();
+
+            const tables = await this.dynamoService.listTables();
+            
+            if(!tables.TableNames?.includes('Tournaments')) {
+                this.dynamoService.createTable(
+                    'Tournaments', 
+                    'tournamentId', [
+                        { AttributeName: 'tournamentId', AttributeType: 'S' }, 
+                        { AttributeName: 'SortKey', AttributeType: 'N' }, 
+                        { AttributeName: 'accessPrice', AttributeType: 'N' }, 
+                        { AttributeName: 'reward', AttributeType: 'N' },
+                        { AttributeName: 'rank', AttributeType: 'N' }
+                    ], 'SortKey');
+            }
+
+            console.log(await this.dynamoService.getItem('Tournaments', { tournamentId: { S: tournamentId }, SortKey: { N: '0' } }));
+
+            await this.dynamoService.insertItem('Tournaments', {
+                tournamentId: { S: tournamentId },
+                SortKey: { N: '0' },
+                accessPrice: { N: accessPrice.toString() },
+                reward: { N: rewardsByRanking.reward.toString() },
+                rank: { N: rewardsByRanking.rank.toString() }
+            })
+
+            return 1;
+
+            // console.log(await this.dynamoService.createTable('Tournaments', 'tournamentId', [{ AttributeName: 'tournamentId', AttributeType: 'S' }, { AttributeName: 'SortKey', AttributeType: 'N' }], 'SortKey'));
             
         } catch (e) {
             throw e;

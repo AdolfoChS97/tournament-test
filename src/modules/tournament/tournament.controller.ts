@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Query, Res, UsePipes } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Query, Res, UsePipes } from '@nestjs/common';
 import { TournamentService } from './tournament.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AddUserQueryParamsDto, CreateTournamentBodyDto, CreateTournamentQueryParamsDto, StartTournamentQueryParamsDto } from './dto/create-tournament.dto';
@@ -19,7 +19,7 @@ export class TournamentController {
     @Res() res: Response,
   ) {
     try {
-      return this.tournamentService.create(tournamentId, +accessPrice, rewardsByRanking);
+      // return res.status()  this.tournamentService.create(tournamentId, +accessPrice, rewardsByRanking);
     } catch (e) {
       throw e;
     }
