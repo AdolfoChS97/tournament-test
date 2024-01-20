@@ -20,17 +20,17 @@ services:
     image: "amazon/dynamodb-local:latest"
     container_name: dynamodb-local
     ports:
-      - "8001:8001"
+      - "8000:8000"
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
     networks:
       tournament-ingress:
-        ipv4_address: 12.5.0.1
+        ipv4_address: 192.168.10.25
 
 networks: 
   tournament-ingress:
     driver: bridge
     ipam:
       config:
-        - subnet: 12.5.0.0/16
+        - subnet: 192.168.10.0/24
