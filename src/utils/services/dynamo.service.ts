@@ -50,7 +50,7 @@ export class DynamoDBService {
         }
     }
 
-    async getItem(tableName: string, key: any) {
+    async getItem(tableName: string, key: any): Promise<DynamoDB.GetItemOutput> {
         try {
             return new Promise((resolve, reject) => {
                 this.dynamoClient.getItem({
@@ -66,7 +66,7 @@ export class DynamoDBService {
         }
     }
 
-    async insertItem(tableName: string, item: any) {
+    async insertItem(tableName: string, item: any): Promise<DynamoDB.PutItemOutput> {
         try {
             return new Promise((resolve, reject) => {
                 this.dynamoClient.putItem({
@@ -74,9 +74,24 @@ export class DynamoDBService {
                     Item: item
                 }, (err, data) => {
                     if(err) reject(err);
-                    return resolve(data);
+                    resolve(data);
                 })
             });
+        } catch (e) {
+            throw new InternalServerErrorException(e.message);
+        }
+    }
+
+    async scanTable(tableName: string): Promise<DynamoDB.ScanOutput> {
+        try {
+            return new Promise((resolve, reject) => {
+                this.dynamoClient.scan({
+                    TableName: tableName
+                }, (err, data) => {
+                    if(err) reject(err);
+                    resolve(data);
+                })
+            })
         } catch (e) {
             throw new InternalServerErrorException(e.message);
         }

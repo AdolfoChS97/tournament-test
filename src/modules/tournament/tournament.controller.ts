@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post, Query, Res, UsePipes } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Query, Res, UsePipes } from '@nestjs/common';
 import { TournamentService } from './tournament.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AddUserQueryParamsDto, CreateTournamentBodyDto, CreateTournamentQueryParamsDto, StartTournamentQueryParamsDto } from './dto/create-tournament.dto';
@@ -13,13 +13,13 @@ export class TournamentController {
   @Post()
   @ApiQuery({ name: 'tournamentId', type: 'string', required: true })
   @ApiQuery({ name: 'accessPrice', type: 'number', required: true })
-  create(
+  async create(
     @Query() { tournamentId, accessPrice }: CreateTournamentQueryParamsDto,
     @Body(new JoiPipe(createTournamentschema)) { rewardsByRanking }: CreateTournamentBodyDto,
-    @Res() res: Response,
+    @Res() res,
   ) {
     try {
-      // return res.status()  this.tournamentService.create(tournamentId, +accessPrice, rewardsByRanking);
+      return res.status(HttpStatus.CREATED).json({ ...await this.tournamentService.create(tournamentId, +accessPrice, rewardsByRanking) })
     } catch (e) {
       throw e;
     }
