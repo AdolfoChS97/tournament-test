@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Query, Res, UsePipes } from '@nestjs/common';
 import { TournamentService } from './tournament.service';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddUserQueryParamsDto, CreateTournamentBodyDto, CreateTournamentQueryParamsDto, CreatedTournament, StartTournamentQueryParamsDto } from './dto/create-tournament.dto';
 import { JoiPipe } from '../../utils/pipes/joi.pipe'
 import { createTournamentschema, startTournamentSchema, addUserSchema } from './schema/tournament.schema';
@@ -14,6 +14,28 @@ export class TournamentController {
   @ApiQuery({ name: 'tournamentId', type: 'string', required: true })
   @ApiQuery({ name: 'accessPrice', type: 'number', required: true })
   @ApiResponse({ status: 201, description: 'Tournament created successfully', type: CreatedTournament})
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: 'Error description' },
+        error: { type: 'string', example: 'Bad Request' },
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal Server Error',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 500 },
+        message: { type: 'string', example: 'Error description' },
+        error: { type: 'string', example: 'Internal Server Error' },
+      },
+    },
+  })
   async create(
     @Query() { tournamentId, accessPrice }: CreateTournamentQueryParamsDto,
     @Body(new JoiPipe(createTournamentschema)) { rewardsByRanking }: CreateTournamentBodyDto,
