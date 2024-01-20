@@ -10,7 +10,9 @@ import {
 import { TournamentService } from "./tournament.service";
 import {
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -37,8 +39,7 @@ export class TournamentController {
   @Post()
   @ApiQuery({ name: "tournamentId", type: "string", required: true })
   @ApiQuery({ name: "accessPrice", type: "number", required: true })
-  @ApiResponse({
-    status: 201,
+  @ApiCreatedResponse({
     description: "Tournament created successfully",
     type: CreatedTournament,
   })
@@ -88,13 +89,55 @@ export class TournamentController {
   @Post("/user")
   @ApiQuery({ name: "tournamentId", type: "string", required: true })
   @ApiQuery({ name: "mail", type: "string", required: true })
-  addUser(
+  @ApiOkResponse({
+    description: 'User added successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'object',
+          properties: {
+            tournamentId: { type: 'string', example: 'abcdef' },
+            mail: { type: 'string', example: 'admin@email.com' },
+            accessPrice: { type: 'number', example: 100 },
+            reward: { type: 'number', example: 1000 },
+            rank: { type: 'number', example: 1 },
+            SortKey: { type: 'number', example: 0 },
+          },
+        },
+        message: { type: 'string', example: 'User added successfully' },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: "Bad Request",
+    schema: {
+      type: "object",
+      properties: {
+        statusCode: { type: "number", example: 400 },
+        message: { type: "string", example: "Error description" },
+        error: { type: "string", example: "Bad Request" },
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: "Internal Server Error",
+    schema: {
+      type: "object",
+      properties: {
+        statusCode: { type: "number", example: 500 },
+        message: { type: "string", example: "Error description" },
+        error: { type: "string", example: "Internal Server Error" },
+      },
+    },
+  })
+  async addUser(
     @Query(new JoiPipe(addUserSchema))
     { tournamentId, mail }: AddUserQueryParamsDto,
-    @Res() res: Response,
+    @Res() res,
   ) {
     try {
-      return this.tournamentService.addUser(tournamentId, mail);
+      return res.status(HttpStatus.OK).json({ ... await this.tournamentService.addUser(tournamentId, mail) });
     } catch (e) {
       throw e;
     }

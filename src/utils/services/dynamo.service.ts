@@ -119,7 +119,33 @@ export class DynamoDBService {
     }
   }
 
-  // async create() {}
-  // async addUser() {}
-  // async start() {}
+  async updateItem(tournamentId: string, mail: string) {
+    try {
+      return new Promise((resolve, reject) => {
+        this.dynamoClient.updateItem(
+          {
+            TableName: "Tournaments",
+            Key: {
+              tournamentId: { S: tournamentId },
+              SortKey: { N: "0" },
+            },
+            UpdateExpression: "SET #mail = :mail",
+            ExpressionAttributeNames: {
+              "#mail": "mail",
+            },
+            ExpressionAttributeValues: {
+              ":mail": { S: mail.toString() },
+            },
+          },
+          (err, data) => {
+            if (err) reject(err);
+            resolve(data);
+          },
+        );
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e.message);
+    }
+
+  }
 }
