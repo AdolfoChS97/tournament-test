@@ -1,13 +1,22 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { DynamoDB } from "aws-sdk";
 import { AttributeDefinition } from "aws-sdk/clients/dynamodb";
 
+
 @Injectable()
 export class DynamoDBService {
-  private readonly dynamoClient = new DynamoDB({
-    region: "local",
-    endpoint: "http://192.168.10.25:8000",
-  });
+
+  private readonly dynamoClient;
+
+  constructor(
+    private readonly configService: ConfigService,
+  ) {
+    this.dynamoClient = new DynamoDB({
+      region: this.configService.get<string>("DYNAMO_REGION"),
+      endpoint: this.configService.get<string>("DYNAMO_ENDPOINT"),
+    });
+  }
 
   async listTables(): Promise<DynamoDB.ListTablesOutput> {
     try {
