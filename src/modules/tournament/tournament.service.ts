@@ -2,13 +2,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { RewardsByRanking } from './utils/classes/tournament.classes';
 import { DynamoDBService } from 'src/utils/services/dynamo.service';
 import { createdTournament } from './utils/mappers/tournament.mapper';
+import { CreatedTournament } from './dto/create-tournament.dto';
 
 @Injectable()
 export class TournamentService {
 
     constructor( private readonly dynamoService: DynamoDBService ) {}
 
-    async create(tournamentId: string, accessPrice: number, rewardsByRanking: RewardsByRanking) {
+    async create(tournamentId: string, accessPrice: number, rewardsByRanking: RewardsByRanking): Promise<CreatedTournament> {
         try {
             if(tournamentId === undefined && tournamentId !== '') 
                 throw new BadRequestException('Tournament ID is required');
